@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>utkarsh — building pipelines</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#0f1724; /* deep navy */
+      --bg2:#0b1220; /* darker */
+      --accent:#ff66b3; /* pink */
+      --glass: rgba(255,255,255,0.06);
+      --muted: rgba(255,255,255,0.75);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Poppins',system-ui,Segoe UI,Roboto,Helvetica,Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(255,102,179,0.06), transparent),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      overflow:hidden;
+    }
+
+    /* decorative moving @ symbols */
+    .at-field{position:fixed;inset:0;pointer-events:none;z-index:0;}
+    .at{position:absolute;color:rgba(255,255,255,0.06);font-weight:700;font-size:48px;transform-origin:center;}
+
+    /* center card */
+    .wrap{position:relative;z-index:5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
+    .card{
+      width:min(920px,96%);
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius:22px;padding:40px 42px;border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 12px 40px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      display:flex;gap:30px;align-items:center;backdrop-filter: blur(6px);
+    }
+
+    .left{width:220px;text-align:center}
+    .avatar{
+      width:160px;height:160px;border-radius:50%;object-fit:cover;border:6px solid rgba(255,255,255,0.06);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transform:translateY(0);transition:0.6s cubic-bezier(.2,.9,.2,1);
+    }
+    .avatar:hover{transform:translateY(-6px) rotate(-1deg) scale(1.02)}
+
+    .name{margin-top:18px;font-weight:700;font-size:34px;color:#fff;letter-spacing:0.6px}
+    .role{margin-top:8px;color:rgba(255,255,255,0.72);font-weight:500}
+
+    .right{flex:1}
+    .headline{font-size:28px;font-weight:600;color:#fff;margin-bottom:10px}
+    .sub{color:rgba(255,255,255,0.7);margin-bottom:18px}
+
+    .status{
+      display:inline-block;padding:10px 16px;border-radius:999px;background:linear-gradient(90deg, rgba(255,102,179,0.12), rgba(255,166,102,0.06));
+      color:#fff;font-weight:600;letter-spacing:0.6px;box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      transform:translateY(0);transition:transform .28s ease;
+    }
+
+    .status:hover{transform:translateY(-6px)}
+
+    .note{margin-top:18px;font-size:15px;color:rgba(255,255,255,0.65)}
+
+    /* animated underline */
+    .glow{display:inline-block;position:relative}
+    .glow:after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:6px;border-radius:8px;background:linear-gradient(90deg,var(--accent),#ffb86b);filter:blur(10px);opacity:0.8;transform:scaleX(0);transform-origin:left;transition:transform .45s ease}
+    .glow:hover:after{transform:scaleX(1)}
+
+    /* paw cursor */
+    .paw{position:fixed;width:44px;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .06s linear}
+
+    /* small responsive */
+    @media (max-width:720px){
+      .card{flex-direction:column;align-items:center;text-align:center;padding:28px}
+      .left{width:auto}
+      .right{width:100%}
+      .headline{font-size:22px}
+      .name{font-size:26px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- decorative @s -->
+  <div class="at-field" aria-hidden>
+    <!-- we'll place many @s via JS -->
+  </div>
+
+  <div class="wrap">
+    <main class="card" role="main">
+      <div class="left">
+        <!-- put your avatar file as avatar.png in the repo root -->
+        <img class="avatar" src="avatar.png" alt="utkarsh">
+        <div class="name">utkarsh</div>
+        <div class="role">🐾 building pipelines</div>
+      </div>
+
+      <div class="right">
+        <div class="headline">building pipelines — <span class="glow">work in progress</span></div>
+        <div class="sub">stay tuned • updates coming soon</div>
+
+        <div style="margin-top:18px">
+          <span class="status">LIVE STATUS: WIP</span>
+        </div>
+
+        <p class="note">This site is under active construction. Follow the progress and check back — something cool is being built.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- custom paw cursor image (use paw.png in repo or keep external) -->
+  <img id="paw" class="paw" src="https://i.imgur.com/7Y6Kj8U.png" alt="paw" style="display:none">
+
+  <script>
+    // ---------- cursor paw ----------
+    const paw = document.getElementById('paw');
+    document.addEventListener('mousemove', e => {
+      paw.style.display = 'block';
+      paw.style.left = e.clientX + 'px';
+      paw.style.top = e.clientY + 'px';
+      // subtle wiggle when mouse moves fast
+      paw.style.transform = `translate(-50%,-50%) scale(1)`;
+    });
+
+    // click effect (paw "press")
+    document.addEventListener('mousedown', () => paw.style.transform = 'translate(-50%,-50%) scale(0.9) rotate(-6deg)');
+    document.addEventListener('mouseup', () => paw.style.transform = 'translate(-50%,-50%) scale(1) rotate(0deg)');
+
+    // ---------- animated @ background ----------
+    const AT_COUNT = 20;
+    const field = document.querySelector('.at-field');
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+    function rand(min, max){return Math.random()*(max-min)+min}
+
+    for(let i=0;i<AT_COUNT;i++){
+      const el = document.createElement('div');
+      el.className = 'at';
+      el.textContent = '@';
+      const size = Math.floor(rand(28,120));
+      el.style.fontSize = size + 'px';
+      el.style.left = rand(-10, vw - 40) + 'px';
+      el.style.top = rand(-40, vh - 40) + 'px';
+      el.style.opacity = rand(0.03, 0.12);
+      el.style.transform = `rotate(${rand(-40,40)}deg)`;
+      field.appendChild(el);
+
+      // animate each one with CSS transform via requestAnimationFrame loop
+      (function loop(node, delay){
+        const dur = rand(6000,16000);
+        const ampX = rand(10, 80);
+        const ampY = rand(6, 40);
+        let start = performance.now() + rand(0,1000);
+        function frame(t){
+          const p = ((t+delay-start)%dur)/dur;
+          const x = Math.sin(p*Math.PI*2)*ampX;
+          const y = Math.cos(p*Math.PI*2)*ampY;
+          node.style.transform = `translate(${x}px,${y}px) rotate(${rand(-20,20)}deg)`;
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      })(el, i*80);
+    }
+
+    // accessibility: hide custom cursor for keyboard navigation
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Tab') paw.style.display = 'none';
+    });
+
+    // small friendly entrance animation for card
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const card = document.querySelector('.card');
+      card.style.opacity = 0;
+      card.style.transform = 'translateY(18px) scale(.995)';
+      setTimeout(()=>{card.style.transition='opacity .8s cubic-bezier(.2,.9,.2,1), transform .8s cubic-bezier(.2,.9,.2,1)';card.style.opacity=1;card.style.transform='translateY(0) scale(1)';},120);
+    });
+  </script>
+</body>
+</html>
